@@ -24,10 +24,10 @@ public class Bd {
 
         // Implementamos un try-with-resources para no desperdiciar recursos
         try (Connection c = DriverManager.getConnection(url);
-             Statement st = c.createStatement())
+             PreparedStatement ps = c.prepareStatement(sentencia))
             {
                 // Ejecutamos la creación de la tabla siguiendo la sentencia
-                st.execute(sentencia);
+                ps.executeUpdate();
             }
         // En caso de que falle la conexión a la BD, controlamos la excepción (SQLException)
         catch (SQLException e) {
