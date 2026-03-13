@@ -2,6 +2,7 @@ package ut2.act1;
 
 import javax.xml.transform.Result;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -116,11 +117,40 @@ public class Bd {
     }
 
     /**
+     * Función para obtener un true/false para saber si un ID de usuario existe.
+
+     * @return existe
+     * Devuelve un valor booleano indicando si exsite el ID del usuario
+     */
+    public boolean idUsuarioExiste (int id) {
+        boolean existe = false;
+        String sentencia = "SELECT id_cliente FROM CLIENTES;";
+
+        // Estructura try-with-resources
+        try (Connection c = DriverManager.getConnection(url);
+             PreparedStatement ps = c.prepareStatement(sentencia);
+             ResultSet rs = ps.executeQuery()) {
+            // Recorremos el ResultSet para ir añadiendo los ids
+            while (rs.next()) {
+                // Si el id recibido coincide con alguno del arraylist, mandamos un true
+                if (id == rs.getInt(1)) {
+                    existe = true;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error SQL: " + e.getMessage());
+        }
+
+        return existe;
+    }
+
+    /**
      * Función para actualizar ciudad de un usuario en base a su ID
      */
     public void actualizarCiudad () {
         Scanner sc = new Scanner(System.in);
         int id = 0, n = numeroClientes();
+        boolean existe = false;
 
         // Si el numero de usuarios es menor a 1, no hacemos nada
         if (n < 1) {
@@ -135,8 +165,8 @@ public class Bd {
                 Main.espera(0);
             }
 
-            // En caso de que el ID recibido sea correcto, actualizamos la ciudad del usuario
-            if (id > 0 && id <= n) {
+            // Llamamos a la función idUsuarioExiste para comprobar si el ID recibido existe
+            if (idUsuarioExiste(id)) {
                 System.out.print("Nueva ciudad: ");
                 String ciudad = sc.nextLine();
 
@@ -187,7 +217,7 @@ public class Bd {
             }
 
             // En caso de que el ID recibido sea correcto, actualizamos la ciudad del usuario
-            if (id > 0 && id <= n) {
+            if (idUsuarioExiste(id)) {
                 String sentencia = "DELETE FROM CLIENTES WHERE id_cliente = ?;";
 
                 // Estructura try-with-resources
