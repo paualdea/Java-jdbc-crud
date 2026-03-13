@@ -123,16 +123,19 @@ public class Bd {
      */
     public boolean idUsuarioExiste (int id) {
         boolean existe = false;
-        String sentencia = "SELECT id_cliente FROM CLIENTES;";
+        // Contamos el número de usuarios con ese ID (1)
+        String sentencia = "SELECT count(*) FROM CLIENTES WHERE id_cliente = ?;";
 
         // Estructura try-with-resources
         try (Connection c = DriverManager.getConnection(url);
-             PreparedStatement ps = c.prepareStatement(sentencia);
-             ResultSet rs = ps.executeQuery()) {
-            // Recorremos el ResultSet para ir añadiendo los ids
-            while (rs.next()) {
-                // Si id recibido coincide con alguno del arraylist, mandamos un true
-                if (id == rs.getInt(1)) {
+             PreparedStatement ps = c.prepareStatement(sentencia)
+             ) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                // Si hay 1 usuario con ese ID, significa que existe
+                if (rs.getInt(1) > 0) {
                     existe = true;
                 }
             }
