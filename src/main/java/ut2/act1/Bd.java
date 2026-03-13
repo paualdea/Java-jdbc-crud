@@ -1,8 +1,7 @@
 package ut2.act1;
 
-import javax.xml.transform.Result;
+// IMPORTS
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -62,7 +61,7 @@ public class Bd {
             System.err.println("Error SQL: " + e.getMessage());
         }
 
-        // Devolvemos un mensaje para que el usuario vea lo que ha ocurrido, incluido el numero de filas afectadas
+        // Devolvemos un mensaje para que el usuario vea lo que ha ocurrido, incluido el número de filas afectadas
         System.out.println("\nCliente " + nombre + " añadido.\n" + resultado + " filas afectadas.");
     }
 
@@ -132,7 +131,7 @@ public class Bd {
              ResultSet rs = ps.executeQuery()) {
             // Recorremos el ResultSet para ir añadiendo los ids
             while (rs.next()) {
-                // Si el id recibido coincide con alguno del arraylist, mandamos un true
+                // Si id recibido coincide con alguno del arraylist, mandamos un true
                 if (id == rs.getInt(1)) {
                     existe = true;
                 }
@@ -145,12 +144,11 @@ public class Bd {
     }
 
     /**
-     * Función para actualizar ciudad de un usuario en base a su ID
+     * Función para actualizar ciudad de un usuario usando su ID
      */
     public void actualizarCiudad () {
         Scanner sc = new Scanner(System.in);
         int id = 0, n = numeroClientes();
-        boolean existe = false;
 
         // Si el numero de usuarios es menor a 1, no hacemos nada
         if (n < 1) {
@@ -164,6 +162,7 @@ public class Bd {
                 System.out.println("\nOpción incorrecta");
                 Main.espera(0);
             }
+            sc.nextLine();
 
             // Llamamos a la función idUsuarioExiste para comprobar si el ID recibido existe
             if (idUsuarioExiste(id)) {
@@ -195,7 +194,7 @@ public class Bd {
     }
 
     /**
-     * Función para eliminar un cliente en base a su ID
+     * Función para eliminar un cliente usando su ID
      */
     public void eliminarCliente () {
         int n = numeroClientes();

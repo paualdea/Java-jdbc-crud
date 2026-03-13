@@ -1,5 +1,6 @@
 package ut2.act1;
 
+// IMPORTS
 import java.util.Scanner;
 
 public class Main {
