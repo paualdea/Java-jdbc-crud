@@ -51,31 +51,15 @@ public class Main {
                     // Reutilizamos la función para listar los usuarios
                     bd.listaUsuarios();
 
-                    // Pedimos el ID de usuario y lo mandamos a la función de actualización
-                    System.out.print("ID usuario a actualizar: ");
-                    try {
-                        int id = sc.nextInt();
-                        bd.actualizarCiudad(id);
-                    } catch (Exception e) {
-                        System.out.println("Opción incorrecta");
-                        espera(0);
-                    }
-
+                    // Lanzamos la función de actualización de ciudad
+                    bd.actualizarCiudad();
                     break;
                 case 4:
                     // Reutilizamos la función para listar los usuarios
                     bd.listaUsuarios();
 
-                    // Pedimos el ID de usuario y lo mandamos a la función de eliminación
-                    System.out.print("ID usuario a eliminar: ");
-                    try {
-                        int id = sc.nextInt();
-                        bd.actualizarCiudad(id);
-                    } catch (Exception e) {
-                        System.out.println("Opción incorrecta");
-                        espera(0);
-                    }
-
+                    // Ejecutamos la función de eliminación de cliente
+                    bd.eliminarCliente();
                     break;
                 case 5:
                     // Salimos del bucle while

@@ -92,53 +92,119 @@ public class Bd {
     }
 
     /**
-     * Función para actualizar ciudad de un usuario en base a su ID
+     * Esta función sirve para devolver un entero del número de clientes que tiene la tabla
 
-     * @param id
-     * Recibimos el ID del usuario a cambiar mediante parametro entero (int)
+     * @return numeroUsuarios
+     * Devuelve cómo entero el número de usuarios de la tabla CLIENTES
      */
-    public void actualizarCiudad (int id) {
+    public int numeroClientes () {
         int numeroUsuarios = 0;
+        String sentencia = "SELECT COUNT(*) FROM CLIENTES";
 
-        String sentencia = "SELECT COUNT(*) FROM CLIENTES;";
         try (Connection c = DriverManager.getConnection(url);
              PreparedStatement ps = c.prepareStatement(sentencia);
              ResultSet rs = ps.executeQuery())
         {
-            // Movemos el primer cursor y obtenemos el numero de usuarios
+            // Movemos el primer cursor y obtenemos el número de usuarios
             rs.next();
             numeroUsuarios = rs.getInt(1);
         } catch (SQLException e) {
             System.err.println("Error SQL: " + e.getMessage());
         }
 
-        // En caso de que el ID recibido sea correcto, actualizamos la ciudad del usuario
-        if (id > 0 && id <= numeroUsuarios) {
-            Scanner sc = new Scanner(System.in);
-            System.out.print("Nueva ciudad: ");
-            String ciudad = sc.nextLine();
+        return numeroUsuarios;
+    }
 
-            // Actualizamos la sentencia
-            sentencia = "UPDATE CLIENTES SET ciudad = ? WHERE id_cliente = ?;";
+    /**
+     * Función para actualizar ciudad de un usuario en base a su ID
+     */
+    public void actualizarCiudad () {
+        Scanner sc = new Scanner(System.in);
+        int id = 0, n = numeroClientes();
 
-            // Estructura try-with-resources
-            try (Connection c = DriverManager.getConnection(url);
-                 PreparedStatement ps = c.prepareStatement(sentencia))
-            {
-                // Bindeamos la nueva ciudad y el ID a la sentencia SQL
-                ps.setString(1, ciudad);
-                ps.setInt(2, id);
+        // Si el numero de usuarios es menor a 1, no hacemos nada
+        if (n < 1) {
+            System.out.println("\nNo hay usuarios en la tabla");
+            Main.espera(2500);
+        } else {
+            try {
+                System.out.print("ID usuario a actualizar: ");
+                id = sc.nextInt();
+            } catch (Exception e) {
+                System.out.println("\nOpción incorrecta");
+                Main.espera(0);
+            }
 
-                // Ejecutamos la sentencia
-                ps.executeUpdate();
-            } catch (SQLException e) {
-                System.err.println("Error SQL: " + e.getMessage());
+            // En caso de que el ID recibido sea correcto, actualizamos la ciudad del usuario
+            if (id > 0 && id <= n) {
+                System.out.print("Nueva ciudad: ");
+                String ciudad = sc.nextLine();
+
+                // Actualizamos la sentencia
+                String sentencia = "UPDATE CLIENTES SET ciudad = ? WHERE id_cliente = ?;";
+
+                // Estructura try-with-resources
+                try (Connection c = DriverManager.getConnection(url);
+                     PreparedStatement ps = c.prepareStatement(sentencia)) {
+                    // Bindeamos la nueva ciudad y el ID a la sentencia SQL
+                    ps.setString(1, ciudad);
+                    ps.setInt(2, id);
+
+                    // Ejecutamos la sentencia
+                    ps.executeUpdate();
+                } catch (SQLException e) {
+                    System.err.println("Error SQL: " + e.getMessage());
+                }
+            }
+            // En caso de que el ID este fuera de rango, mostramos un mensaje de error
+            else {
+                System.out.println("\nEl ID de usuario es incorrecto");
+                Main.espera(0);
             }
         }
-        // En caso de que el ID este fuera de rango, mostramos un mensaje de error
-        else {
-            System.out.println("\nEl ID de usuario es incorrecto");
-            Main.espera(0);
+    }
+
+    /**
+     * Función para eliminar un cliente en base a su ID
+     */
+    public void eliminarCliente () {
+        int n = numeroClientes();
+
+        // Si el numero de usuarios es menor a 1, no hacemos nada
+        if (n < 1) {
+            System.out.println("\nNo hay usuarios en la tabla");
+            Main.espera(2500);
+        } else {
+            Scanner sc = new Scanner(System.in);
+            int id = 0;
+
+            try {
+                System.out.print("ID usuario a eliminar: ");
+                id = sc.nextInt();
+            } catch (Exception e) {
+                System.out.println("\nOpción incorrecta");
+                Main.espera(0);
+            }
+
+            // En caso de que el ID recibido sea correcto, actualizamos la ciudad del usuario
+            if (id > 0 && id <= n) {
+                String sentencia = "DELETE FROM CLIENTES WHERE id_cliente = ?;";
+
+                // Estructura try-with-resources
+                try (Connection c = DriverManager.getConnection(url);
+                     PreparedStatement ps = c.prepareStatement(sentencia)) {
+                    // Bindeamos el ID a la sentencia SQL
+                    ps.setInt(1, id);
+
+                    // Ejecutamos la sentencia
+                    ps.executeUpdate();
+                } catch (SQLException e) {
+                    System.err.println("Error SQL: " + e.getMessage());
+                }
+            } else {
+                System.out.println("\nEl ID de usuario es incorrecto");
+                Main.espera(0);
+            }
         }
-     }
+    }
 }
